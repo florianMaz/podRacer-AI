@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <time.h>   
 #include <string>
+ 
+#include <Pod.hpp>
 
 bool debug = false;
 int NB_PODS = 3;
@@ -15,7 +17,8 @@ int HEIGHT = 800;
 int TIME = 1;
 int MAX_TRUST = 100;
 int MAX_TURN = 15;
-int
+int MAX_SPEED = 1000;
+int MIN_SPEED = 1;
 
 void next_input_must_be(string value) {
     string val;
@@ -31,7 +34,6 @@ void read_dimensions(int width, int height) {
     HEIGHT = height;
 }
 
-
 void read_nb_pods(int nbPods) {
     NB_PODS = nbPods;
     if(debug)
@@ -39,7 +41,6 @@ void read_nb_pods(int nbPods) {
     //if debug:print("nb pods : ", NB_PODS, file=sys.stderr)
 }
  
-
 std::map<char,int>  read_list_of_circles(int nbCircles) {
     string userEntry;
     int nb = nbCircles;
@@ -58,7 +59,6 @@ std::map<char,int>  read_list_of_circles(int nbCircles) {
     }
     return l;
 }
-    
 
 void read_walls(int nbCircles){
     walls = read_list_of_circles(nbCircles)
@@ -71,6 +71,48 @@ void read_checkpoints(int nbCircles) {
     }
 }
 
+void get_trust(Pod pod, array<int, 3>cp){
+    vector<float> vec = vector<float>();
+    vec.push_back(cp[0]-pod.getX());
+    vec.push_back(cp[1]-pod.getY());
+
+    float normvec = .00001+dot(vec,vec)**.5;
+    vec.push_back(vec[0]/normvec);
+    vec.push_back(vec[1]/normvec);
+
+    vector<float> speed = vector<float>();
+    speed.push_back(pod.getVX());
+    speed.push_back(pod.getVY());
+
+    float normspeed = .00001+dot(speed,speed)**.5;
+    speed.push_back(speed[0]/normspeed);
+    speed.push_back(speed[1]/normspeed);
+
+    if (dot(vec, speed) > 0.5){
+        if normspeed > MAX_SPEED{
+            return 0;
+        }
+        if normspeed < MIN_SPEED{
+            return MAX_TRUST;
+        }
+    }
+    float trust = powf(normVec, EXPO);
+    if trust > MAX_TRUST{
+        return MAX_TRUST
+    }
+    return trust
+}
+
+void check(int i){
+    Pod pod = pods[i];
+    array<int, 3> cp = checkpoints[cur_cp[i]];
+    vector<float> vec = vector<float>();
+    vec.push_back(cp[0]-pod.getX());
+    vec.push_back(cp[1]-pod.getY());
+    if dot(vec, vec) < powf(cp[3], 2){
+        cur_cp[i]+=1;
+    }
+}
 
 int main() {
     MAX_SPEED = 0.5;
