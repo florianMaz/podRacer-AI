@@ -15,7 +15,25 @@ int HEIGHT = 800;
 int TIME = 1;
 int MAX_TRUST = 100;
 int MAX_TURN = 15;
-int
+
+
+
+float dot(std::vector<float> a, std::vector<float> b) {
+    /*
+    def dot(a,b):
+        return sum(x*y for x,y in zip(a,b))
+    */
+
+    float result;
+
+    for(auto it = a.begin(), end = a.end(); it != end; it++) {
+        for(auto it2 = b.begin(), end = b.end(); it2 != end; it2++) {
+            result *= it * it2;
+        }
+    }
+
+    return result;
+}
 
 void next_input_must_be(string value) {
     string val;
