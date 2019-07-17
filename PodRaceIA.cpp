@@ -26,9 +26,9 @@ void next_input_must_be(string value) {
     }
 }
 
-void read_dimensions(char parts[]) {
-    WIDTH = int(parts[1]);
-    HEIGHT = int(parts[2]);
+void read_dimensions(int width, int height) {
+    WIDTH = width;
+    HEIGHT = height;
 }
 
 
@@ -73,17 +73,19 @@ void read_checkpoints(int nbCircles) {
 
 
 int main() {
-    MAX_SPEED = 0.5
-
-
-
+    MAX_SPEED = 0.5;
+    int settingsDimensions = read_dimensions(100, 100);
+    int settingsWalls = read_walls(1);
+    int settingsCheckpoints = read_checkpoints(1);
+    int settingsNbPods = read_nb_pods(1);
+    /*
     settings = {
             "DIMENSIONS":read_dimensions,
             "WALLS":read_walls,
             "CHECKPOINTS":read_checkpoints,
             "NB_PODS":read_nb_pods
     }
-
+*/
     next_input_must_be("START player")
     player = int(input())
     next_input_must_be("STOP player")
@@ -135,14 +137,13 @@ int main() {
                 }
 
                 print("START action")
-                for i in range(NB_PODS){
+                for (i in range(NB_PODS)){
 
-            check(i)
-            if debug:print("debug IA : ",get_turn(pods[i], checkpoints[cur_cp[i]]),
-                           get_trust(pods[i], checkpoints[cur_cp[i]]), end=";", file=sys.stderr)
+                    check(i);
+                    if (debug){print("debug IA : ",get_turn(pods[i], checkpoints[cur_cp[i]]),
+                            get_trust(pods[i], checkpoints[cur_cp[i]]), end=";", file=sys.stderr);}
 
-            print(get_turn(pods[i], checkpoints[cur_cp[i]]),
-                  get_trust(pods[i], checkpoints[cur_cp[i]]), end=";")
+                    print(get_turn(pods[i], checkpoints[cur_cp[i]]), get_trust(pods[i], checkpoints[cur_cp[i]]), end=";");
                 }
 
                 print("")
