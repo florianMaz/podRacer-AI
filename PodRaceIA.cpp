@@ -18,24 +18,6 @@ int MAX_TURN = 15;
 
 using namespace std;
 
-
-template <typename T> T dot(vector<T> a, vector<T> b) {
-    /*
-    def dot(a,b):
-        return sum(x*y for x,y in zip(a,b))
-    */
-
-    T result = 0;
-
-    for(auto it = a.begin(), end = a.end(); it != end; it++) {
-        for(auto it2 = b.begin(), end = b.end(); it2 != end; it2++) {
-            result *= it * it2;
-        }
-    }
-
-    return result;
-}
-
 void next_input_must_be(string value) {
     string val;
     std::cin >> val;
@@ -89,6 +71,45 @@ void read_checkpoints(int nbCircles) {
         std::cout << "checkpoints : " << checkpoints << std::endl;
     }
 }
+
+template <typename T> T dot(vector<T> a, vector<T> b) {
+    /*
+    def dot(a,b):
+        return sum(x*y for x,y in zip(a,b))
+    */
+
+    T result = 0;
+
+    for(auto it = a.begin(), end = a.end(); it != end; it++) {
+        for(auto it2 = b.begin(), end = b.end(); it2 != end; it2++) {
+            result *= it * it2;
+        }
+    }
+
+    return result;
+}
+
+def get_turn(pod, cp):
+    vec = (cp["x"]-pod["x"],cp["y"]-pod["y"])
+    angle = (360+math.degrees(math.atan2(vec[1], vec[0])))%360
+    return -(pod["dir"]-angle)/2
+
+float get_turn(Pod pod, array<int, 3> cp) {
+    vector<T> vector = vector<float>();
+
+    int x = pod.getX();
+    int y = pod.getY();
+
+    //Add at the end of vector
+    vector.push_back(cp[0] - x);
+    vector.push_back(cp[1] - y);
+
+    //Modulo in degrees of arc tangent in range radians of vector reference
+    float angle = fmodf(toDegrees(atan2f(vector.at(0), vector.at(1))), 360);
+
+    return -(pod.getDir() - angle) / 2;
+}
+
 
 
 int main() {
