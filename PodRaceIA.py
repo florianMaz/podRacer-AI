@@ -111,61 +111,61 @@ if len(sys.argv)>4:
     MAX_SPEED = float(sys.argv[4])
 
 
-settings = {
-    "DIMENSIONS":read_dimensions,
-    "WALLS":read_walls,
-    "CHECKPOINTS":read_checkpoints,
-    "NB_PODS":read_nb_pods
-}
+    settings = {
+        "DIMENSIONS":read_dimensions,
+        "WALLS":read_walls,
+        "CHECKPOINTS":read_checkpoints,
+        "NB_PODS":read_nb_pods
+    }
 
-next_input_must_be("START player")
-player = int(input())
-next_input_must_be("STOP player")
+    next_input_must_be("START player")
+    player = int(input())
+    next_input_must_be("STOP player")
 
 
-next_input_must_be("START settings")
-line = input()
-while line != "STOP settings":
-    parts = line.split()
-    settings[parts[0]](parts)
+    next_input_must_be("START settings")
     line = input()
-    
-pods = []
-cur_cp = [0]*NB_PODS
-turn = 1
-while True:
-    next_input_must_be("START turn")
-    end = "STOP turn"
-    pods = []
-    line = input()
-    while line != end:
-        play,pod,x,y,vx,vy,direction, health = map(float, line.split())
-
-        if debug:print(play,pod,x,y,vx,vy,direction, health, file=sys.stderr)
-        if play == player:
-            pods.append({
-                "x":x,
-                "y":y,
-                "vx":vx,
-                "vy":vy,
-                "dir":direction,
-                "health":health
-                }) 
+    while line != "STOP settings":
+        parts = line.split()
+        settings[parts[0]](parts)
         line = input()
 
-    if debug:print(pods, file=sys.stderr)
-    if debug:print(checkpoints, file=sys.stderr)
-        
-    print("START action")
-    for i in range(NB_PODS):
-        check(i)
-        if debug:print("debug IA : ",get_turn(pods[i], checkpoints[cur_cp[i]]),
-             get_trust(pods[i], checkpoints[cur_cp[i]]), end=";", file=sys.stderr)
-        
-        print(get_turn(pods[i], checkpoints[cur_cp[i]]),
-             get_trust(pods[i], checkpoints[cur_cp[i]]), end=";")
-        
-    print("")
-    print("STOP action")
-    turn += 1
+    pods = []
+    cur_cp = [0]*NB_PODS
+    turn = 1
+    while True:
+        next_input_must_be("START turn")
+        end = "STOP turn"
+        pods = []
+        line = input()
+        while line != end:
+            play,pod,x,y,vx,vy,direction, health = map(float, line.split())
+
+            if debug:print(play,pod,x,y,vx,vy,direction, health, file=sys.stderr)
+            if play == player:
+                pods.append({
+                    "x":x,
+                    "y":y,
+                    "vx":vx,
+                    "vy":vy,
+                    "dir":direction,
+                    "health":health
+                    })
+            line = input()
+
+        if debug:print(pods, file=sys.stderr)
+        if debug:print(checkpoints, file=sys.stderr)
+
+        print("START action")
+        for i in range(NB_PODS):
+            check(i)
+            if debug:print("debug IA : ",get_turn(pods[i], checkpoints[cur_cp[i]]),
+                 get_trust(pods[i], checkpoints[cur_cp[i]]), end=";", file=sys.stderr)
+
+            print(get_turn(pods[i], checkpoints[cur_cp[i]]),
+                 get_trust(pods[i], checkpoints[cur_cp[i]]), end=";")
+
+        print("")
+        print("STOP action")
+        turn += 1
     
