@@ -16,15 +16,16 @@ int TIME = 1;
 int MAX_TRUST = 100;
 int MAX_TURN = 15;
 
+using namespace std;
 
 
-float dot(std::vector<float> a, std::vector<float> b) {
+template <typename T> T dot(vector<T> a, vector<T> b) {
     /*
     def dot(a,b):
         return sum(x*y for x,y in zip(a,b))
     */
 
-    float result;
+    T result = 0;
 
     for(auto it = a.begin(), end = a.end(); it != end; it++) {
         for(auto it2 = b.begin(), end = b.end(); it2 != end; it2++) {
