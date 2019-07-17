@@ -15,7 +15,7 @@ int HEIGHT = 800;
 int TIME = 1;
 int MAX_TRUST = 100;
 int MAX_TURN = 15;
-int
+int player = 1; // Nombre de joueur
 
 void next_input_must_be(string value) {
     string val;
@@ -72,12 +72,10 @@ void read_checkpoints(int nbCircles) {
 }
 
 
-int main() {
+int main(char args[]) {
     MAX_SPEED = 0.5;
-    int settingsDimensions = read_dimensions(100, 100);
-    int settingsWalls = read_walls(1);
-    int settingsCheckpoints = read_checkpoints(1);
-    int settingsNbPods = read_nb_pods(1);
+    String userInput;
+
     /*
     settings = {
             "DIMENSIONS":read_dimensions,
@@ -87,27 +85,34 @@ int main() {
     }
 */
     next_input_must_be("START player")
-    player = int(input())
+    cin >> player;
     next_input_must_be("STOP player")
 
 
     next_input_must_be("START settings")
-    line = input()
-    while (line != "STOP settings") {
-        parts = line.split()
-        settings[parts[0]](parts)
-        line = input()
+    cin >> userInput;
+    while (userInput != "STOP settings") {
+        std::vector<std::string> result;
+        std::istringstream iss(userInput);
+        for(std::string userInput; iss >> userInput;) {
+            result.push_back(userInput);
+        }
+        int settingsDimensions = read_dimensions(result[0], result[1]);
+        int settingsWalls = read_walls(result[2]);
+        int settingsCheckpoints = read_checkpoints(result[3]);
+        int settingsNbPods = read_nb_pods(result[4]);
+        cin >> userInput;
     }
 
 
-    pods = []
+    array<Pod> pods = array<Pod>();
     cur_cp = [0]*NB_PODS
     turn = 1
     while(1) {
                 next_input_must_be("START turn")
                 end = "STOP turn"
-                pods = []
-                line = input()
+                array<Pod> pods = array<Pod>();
+                cin >> userInput;
                 while(line != end) {
                     play,pod,x,y,vx,vy,direction, health = map(float, line.split())
 
@@ -115,6 +120,14 @@ int main() {
                         print(play,pod,x,y,vx,vy,direction, health, file=sys.stderr)
                     }
                     if(play == player){
+                        Pod pod = new Pod();
+                        pod.setX(x);
+                        pod.setY(y);
+                        pod.setVx(vx);
+                        pod.setVy(vy);
+                        pod.setVy(setDir);
+                        pod.setHealth(health);
+                        /*
                         pods.append({
                                             "x":x,
                                             "y":y,
@@ -123,9 +136,10 @@ int main() {
                                             "dir":direction,
                                             "health":health
                                     })
+                                    */
                     }
 
-                    line = input()
+                    cin >> userInput;
                 }
 
 
