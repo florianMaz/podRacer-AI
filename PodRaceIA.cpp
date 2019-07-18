@@ -185,12 +185,11 @@ int main(char args[]) {
 
 
     vector<Pod> pods = vector<Pod>();
-    cur_cp = [0]*NB_PODS
+    cur_cp = [0]*NB_PODS // ça j'ai pas compris
     turn = 1
     while(1) {
                 next_input_must_be("START turn")
                 String end = "STOP turn"
-                array<Pod> pods = array<Pod>();
                 cin >> userInput;
                 while(userInput.compare(end) != 0) {
                     std::vector<std::string> resultTurn;
@@ -222,13 +221,15 @@ int main(char args[]) {
                                             "health":health
                                     })
                                     */
-                    }
 
+                    }
+                    pods.push_back(pod);
                     cin >> userInput;
                 }
 
 
                 if (debug){
+                    cout
                     //print(pods, file=sys.stderr)
                 }
                 if(debug){
@@ -241,8 +242,10 @@ int main(char args[]) {
                     check(i);
                     if (debug){
                         //print("debug IA : ",get_turn(pods[i], checkpoints[cur_cp[i]]),
-                          //  get_trust(pods[i], checkpoints[cur_cp[i]]), end=";", file=sys.stderr);}
+                        //  get_trust(pods[i], checkpoints[cur_cp[i]]), end=";", file=sys.stderr);}
 
+                    }
+                    cout << get_turn(pods[i], checkpoints[cur_cp[i]], get_trust(pods[i], checkpoints[cur_cp[i]]), end=";");
                     //print(get_turn(pods[i], checkpoints[cur_cp[i]]), get_trust(pods[i], checkpoints[cur_cp[i]]), end=";");
                 }
 
