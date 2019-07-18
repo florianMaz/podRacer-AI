@@ -7,7 +7,7 @@
 #include <string>
 
 bool debug = false;
-int NB_PODS = 3;
+int NB_PODS = 1;
 int POD_RADIUS = 10;
 int FRICTION = 0.005;
 int WIDTH = 800;
@@ -170,7 +170,7 @@ int main(char args[]) {
 
     next_input_must_be("START settings")
     cin >> userInput;
-    while (userInput != "STOP settings") {
+    while (userInput.compare("STOP settings") != 0) {
         std::vector<std::string> result;
         std::istringstream iss(userInput);
         for(std::string userInput; iss >> userInput;) {
@@ -184,28 +184,34 @@ int main(char args[]) {
     }
 
 
-    array<Pod> pods = array<Pod>();
+    vector<Pod> pods = vector<Pod>();
     cur_cp = [0]*NB_PODS
     turn = 1
     while(1) {
                 next_input_must_be("START turn")
-                end = "STOP turn"
+                String end = "STOP turn"
                 array<Pod> pods = array<Pod>();
                 cin >> userInput;
-                while(line != end) {
-                    play,pod,x,y,vx,vy,direction, health = map(float, line.split())
+                while(userInput.compare(end) != 0) {
+                    std::vector<std::string> resultTurn;
+                    std::istringstream iss(userInput);
+                    for(std::string userInput; iss >> userInput;) {
+                        resultTurn.push_back(userInput);
+                    }
+                    //play=>result[0],pod=>result[1],x=>result[2],y=>result[3],
+                    // vx=>result[4],vy=>result[5],direction=>result[6], health=>result[7] = map(float, line.split())
 
                     if(debug){
-                        print(play,pod,x,y,vx,vy,direction, health, file=sys.stderr)
+                        //print(play,pod,x,y,vx,vy,direction, health, file=sys.stderr)
                     }
                     if(play == player){
                         Pod pod = new Pod();
-                        pod.setX(x);
-                        pod.setY(y);
-                        pod.setVx(vx);
-                        pod.setVy(vy);
-                        pod.setVy(setDir);
-                        pod.setHealth(health);
+                        pod.setX(stof(result[2]));
+                        pod.setY(stof(result[3]));
+                        pod.setVx(stof(result[4]));
+                        pod.setVy(stof(result[5]));
+                        pod.setDir(stof(result[6]));
+                        pod.setHealth(stof(result[7]));
                         /*
                         pods.append({
                                             "x":x,
@@ -223,24 +229,25 @@ int main(char args[]) {
 
 
                 if (debug){
-                    print(pods, file=sys.stderr)
+                    //print(pods, file=sys.stderr)
                 }
                 if(debug){
-                    print(checkpoints, file=sys.stderr)
+                    //print(checkpoints, file=sys.stderr)
                 }
 
                 print("START action")
-                for (i in range(NB_PODS)){
+                for (int i = 0; i<NB_PODS; i++){
 
                     check(i);
-                    if (debug){print("debug IA : ",get_turn(pods[i], checkpoints[cur_cp[i]]),
-                            get_trust(pods[i], checkpoints[cur_cp[i]]), end=";", file=sys.stderr);}
+                    if (debug){
+                        //print("debug IA : ",get_turn(pods[i], checkpoints[cur_cp[i]]),
+                          //  get_trust(pods[i], checkpoints[cur_cp[i]]), end=";", file=sys.stderr);}
 
-                    print(get_turn(pods[i], checkpoints[cur_cp[i]]), get_trust(pods[i], checkpoints[cur_cp[i]]), end=";");
+                    //print(get_turn(pods[i], checkpoints[cur_cp[i]]), get_trust(pods[i], checkpoints[cur_cp[i]]), end=";");
                 }
 
-                print("")
-                print("STOP action")
+                cout<<("")
+                cout<<("STOP action")
                 turn += 1
     }
 
