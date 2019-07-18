@@ -72,6 +72,85 @@ void read_checkpoints(int nbCircles) {
 }
 
 
+template <typename T> T dot(vector<T> a, vector<T> b) {
+    /*
+    def dot(a,b):
+        return sum(x*y for x,y in zip(a,b))
+    */
+
+    T result = 0;
+
+    for(auto it = a.begin(), end = a.end(); it != end; it++) {
+        for(auto it2 = b.begin(), end = b.end(); it2 != end; it2++) {
+            result *= it * it2;
+        }
+    }
+
+    return result;
+}
+
+
+float get_turn(Pod pod, array<int, 3> cp) {
+    vector<T> vector = vector<float>();
+
+    int x = pod.getX();
+    int y = pod.getY();
+
+    //Add at the end of vector
+    vector.push_back(cp[0] - x);
+    vector.push_back(cp[1] - y);
+
+    //Modulo in degrees of arc tangent in range radians of vector reference
+    float angle = fmodf(toDegrees(atan2f(vector.at(0), vector.at(1))), 360);
+
+    return -(pod.getDir() - angle) / 2;
+}
+
+
+void get_trust(Pod pod, array<int, 3>cp){
+    vector<float> vec = vector<float>();
+    vec.push_back(cp[0]-pod.getX());
+    vec.push_back(cp[1]-pod.getY());
+
+    float normvec = .00001+dot(vec,vec)**.5;
+    vec.push_back(vec[0]/normvec);
+    vec.push_back(vec[1]/normvec);
+
+    vector<float> speed = vector<float>();
+    speed.push_back(pod.getVX());
+    speed.push_back(pod.getVY());
+
+    float normspeed = .00001+dot(speed,speed)**.5;
+    speed.push_back(speed[0]/normspeed);
+    speed.push_back(speed[1]/normspeed);
+
+    if (dot(vec, speed) > 0.5){
+        if (normspeed > MAX_SPEED){
+                    return 0;
+            }
+        if(normspeed < MIN_SPEED){
+                    return MAX_TRUST;
+            }
+    }
+    float trust = powf(normVec, EXPO);
+    if(trust > MAX_TRUST){
+        return MAX_TRUST
+    }
+    return trust
+}
+
+void check(int i){
+    Pod pod = pods[i];
+    array<int, 3> cp = checkpoints[cur_cp[i]];
+    vector<float> vec = vector<float>();
+    vec.push_back(cp[0]-pod.getX());
+    vec.push_back(cp[1]-pod.getY());
+    if (dot(vec, vec) < powf(cp[3], 2)){
+        cur_cp[i]+=1;
+    }
+}
+
+
 int main(char args[]) {
     MAX_SPEED = 0.5;
     String userInput;
