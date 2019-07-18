@@ -36,16 +36,16 @@ public:
     void setHealth(int health) {
         this->health = health;
     }
-    float getVx() {
+    float getVX() {
         return this->vx;
     }
-    void setVx(float vx) {
+    void setVX(float vx) {
         this->vx = vx;
     }
-    float getVy() {
+    float getVY() {
         return this->vy;
     }
-    void setVy(float vy) {
+    void setVY(float vy) {
         this->vy = vy;
     }
 

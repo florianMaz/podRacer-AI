@@ -1,30 +1,35 @@
 #include <iostream>
-#include <algorithm>
 #include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <time.h>   
 #include <string>
+#include "Pod.hpp"
+#include <array>
+#include <vector>
+using namespace std;
 
 bool debug = false;
 int NB_PODS = 1;
 int POD_RADIUS = 10;
-int FRICTION = 0.005;
+float FRICTION = 0.005;
 int WIDTH = 800;
 int HEIGHT = 800;
 int TIME = 1;
 int MAX_TRUST = 100;
 int MAX_TURN = 15;
 int player = 1; // Nombre de joueur
-std::map<char,int> walls;
-std::map<char,int> checkpoints;
-
+float MAX_TRUST = 100.0;
+float EXPO = 1.2;
+float MAX_SPEED = 1000.0;
+float MIN_SPEED = 1.0;
+vector<Pod> pods;
+//map<char,int> walls;
+//map<char,int> checkpoints;
 
 void next_input_must_be(string value) {
     string val;
-    std::cin >> val;
+    cin >> val;
     if (val.compare(value)) {
-        std::cout << "expected input was " << value << "instead of " << val <<std::endl;
+        cout << "expected input was " << value << "instead of " << val <<endl;
         exit(0);
     }
 }
@@ -38,12 +43,12 @@ void read_dimensions(int width, int height) {
 void read_nb_pods(int nbPods) {
     NB_PODS = nbPods;
     if(debug)
-        std::cout << "nb pods : " << NB_PODS << std::endl;
+        cout << "nb pods : " << NB_PODS << endl;
     //if debug:print("nb pods : ", NB_PODS, file=sys.stderr)
 }
  
-
-std::map<char,int>  read_list_of_circles(int nbCircles) {
+/*
+map<char,int> read_list_of_circles(int nbCircles) {
     string userEntry;
     int nb = nbCircles;
     std::map<char,int> l;
@@ -60,17 +65,17 @@ std::map<char,int>  read_list_of_circles(int nbCircles) {
         l.insert (std::pair<char,int>('radius',stoi(result[2])));
     }
     return l;
-}
+}*/
     
 
 void read_walls(int nbCircles){
-    walls = read_list_of_circles(nbCircles)
+    walls = 2;//read_list_of_circles(nbCircles)
 }
 
 void read_checkpoints(int nbCircles) {
-    checkpoints = read_list_of_circles(nbCircles)
+    checkpoints = 2//read_list_of_circles(nbCircles)
     if(debug) {
-        std::cout << "checkpoints : " << checkpoints << std::endl;
+        cout << "checkpoints : " << checkpoints << endl;
     }
 }
 
@@ -110,20 +115,21 @@ float get_turn(Pod pod, array<int, 3> cp) {
 }
 
 
-void get_trust(Pod pod, array<int, 3>cp){
+float get_trust(Pod pod, array<int, 3>cp){
     vector<float> vec = vector<float>();
     vec.push_back(cp[0]-pod.getX());
     vec.push_back(cp[1]-pod.getY());
-
-    float normvec = .00001+dot(vec,vec)**.5;
+    float normvec;
+    normvec = 0.00001+dot(vec,vec)*0.5;//.00001+dot(vec,vec)**.5;
     vec.push_back(vec[0]/normvec);
     vec.push_back(vec[1]/normvec);
+
 
     vector<float> speed = vector<float>();
     speed.push_back(pod.getVX());
     speed.push_back(pod.getVY());
 
-    float normspeed = .00001+dot(speed,speed)**.5;
+    float normspeed = 0.00001+dot(speed,speed)*0.5;//.00001+dot(speed,speed)**.5;
     speed.push_back(speed[0]/normspeed);
     speed.push_back(speed[1]/normspeed);
 
@@ -137,9 +143,9 @@ void get_trust(Pod pod, array<int, 3>cp){
     }
     float trust = powf(normVec, EXPO);
     if(trust > MAX_TRUST){
-        return MAX_TRUST
+        return MAX_TRUST;
     }
-    return trust
+    return trust;
 }
 
 void check(int i){
@@ -154,9 +160,9 @@ void check(int i){
 }
 
 
-int main(char args[]) {
+int main(int argc, char const *argv[]) {
     MAX_SPEED = 0.5;
-    String userInput;
+    string userInput;
 
     /*
     settings = {
@@ -166,95 +172,108 @@ int main(char args[]) {
             "NB_PODS":read_nb_pods
     }
 */
-    next_input_must_be("START player")
+    if (argc > 1) {
+        MAX_TRUST = atoi(argv[1]);
+    }
+    if (argc > 2) {
+        EXPO = atoi(argv[2]);
+    }
+    if (argc > 3) {
+        MIN_SPEED = atoi(argv[3]);
+    }
+    if (argc > 4) {
+        MAX_SPEED = atoi(argv[4]);
+    }
+    next_input_must_be("START player");
     cin >> player;
-    next_input_must_be("STOP player")
+    next_input_must_be("STOP player");
 
 
-    next_input_must_be("START settings")
+    next_input_must_be("START settings");
     cin >> userInput;
     while (userInput.compare("STOP settings") != 0) {
-        std::vector<std::string> result;
-        std::istringstream iss(userInput);
-        for(std::string userInput; iss >> userInput;) {
+        vector<string> result;
+        istringstream iss(userInput);
+        for(string userInput; iss >> userInput;) {
             result.push_back(userInput);
         }
-        int settingsDimensions = read_dimensions(result[0], result[1]);
-        int settingsWalls = read_walls(result[2]);
-        int settingsCheckpoints = read_checkpoints(result[3]);
-        int settingsNbPods = read_nb_pods(result[4]);
+        int settingsDimensions = 100;//read_dimensions(result[0], result[1]);
+        int settingsWalls = 1;//read_walls(result[2]);
+        int settingsCheckpoints = 1;//read_checkpoints(result[3]);
+        int settingsNbPods = 1;//read_nb_pods(result[4]);
         cin >> userInput;
     }
 
 
-    vector<Pod> pods = vector<Pod>();
+    pods = vector<Pod>();
     cur_cp = [0]*NB_PODS // ça j'ai pas compris
     turn = 1
     while(1) {
-                next_input_must_be("START turn")
-                String end = "STOP turn"
-                cin >> userInput;
-                while(userInput.compare(end) != 0) {
-                    std::vector<std::string> resultTurn;
-                    std::istringstream iss(userInput);
-                    for(std::string userInput; iss >> userInput;) {
-                        resultTurn.push_back(userInput);
-                    }
-                    //play=>result[0],pod=>result[1],x=>result[2],y=>result[3],
-                    // vx=>result[4],vy=>result[5],direction=>result[6], health=>result[7] = map(float, line.split())
+        next_input_must_be("START turn");
+        string end = "STOP turn";
+        cin >> userInput;
+        while(userInput.compare(end) != 0) {
+            vector<string> resultTurn;
+            istringstream iss(userInput);
+            for(string userInput; iss >> userInput;) {
+                resultTurn.push_back(userInput);
+            }
+            //play=>result[0],pod=>result[1],x=>result[2],y=>result[3],
+            // vx=>result[4],vy=>result[5],direction=>result[6], health=>result[7] = map(float, line.split())
 
-                    if(debug){
-                        //print(play,pod,x,y,vx,vy,direction, health, file=sys.stderr)
-                    }
-                    if(play == player){
-                        Pod pod = new Pod();
-                        pod.setX(stof(result[2]));
-                        pod.setY(stof(result[3]));
-                        pod.setVx(stof(result[4]));
-                        pod.setVy(stof(result[5]));
-                        pod.setDir(stof(result[6]));
-                        pod.setHealth(stof(result[7]));
-                        /*
-                        pods.append({
-                                            "x":x,
-                                            "y":y,
-                                            "vx":vx,
-                                            "vy":vy,
-                                            "dir":direction,
-                                            "health":health
-                                    })
-                                    */
+            if(debug){
+                //print(play,pod,x,y,vx,vy,direction, health, file=sys.stderr)
+            }
+            if(play == player){
+                Pod pod = new Pod();
+                pod.setX(stof(result[2]));
+                pod.setY(stof(result[3]));
+                pod.setVX(stof(result[4]));
+                pod.setVY(stof(result[5]));
+                pod.setDir(stof(result[6]));
+                pod.setHealth(stof(result[7]));
+                /*
+                pods.append({
+                                    "x":x,
+                                    "y":y,
+                                    "vx":vx,
+                                    "vy":vy,
+                                    "dir":direction,
+                                    "health":health
+                            })
+                            */
 
-                    }
-                    pods.push_back(pod);
-                    cin >> userInput;
-                }
+            }
+            pods.push_back(pod);
+            cin >> userInput;
+        }
 
 
-                if (debug){
-                    cout
-                    //print(pods, file=sys.stderr)
-                }
-                if(debug){
-                    //print(checkpoints, file=sys.stderr)
-                }
+        if (debug){
+            cout << pods;
+            //print(pods, file=sys.stderr)
+        }
+        if(debug){
+            //print(checkpoints, file=sys.stderr)
+        }
 
-                print("START action")
-                for (int i = 0; i<NB_PODS; i++){
+        print("START action")
+        for (int i = 0; i<NB_PODS; i++){
 
-                    check(i);
-                    if (debug){
-                        //print("debug IA : ",get_turn(pods[i], checkpoints[cur_cp[i]]),
-                        //  get_trust(pods[i], checkpoints[cur_cp[i]]), end=";", file=sys.stderr);}
+            check(i);
+            if (debug){
+                //print("debug IA : ",get_turn(pods[i], checkpoints[cur_cp[i]]),
+                //  get_trust(pods[i], checkpoints[cur_cp[i]]), end=";", file=sys.stderr);}
 
-                    }
-                    cout << get_turn(pods[i], checkpoints[cur_cp[i]], get_trust(pods[i], checkpoints[cur_cp[i]]), end=";"); // Je comprends pas quoi passer à get turn
-                    //print(get_turn(pods[i], checkpoints[cur_cp[i]]), get_trust(pods[i], checkpoints[cur_cp[i]]), end=";");
-                }
+            }
+            cout << get_turn(pods[i] << settingsDimensions << get_trust(pods[i]) << settingsCheckpoints << ";";
+            //cout << get_turn(pods[i], checkpoints[cur_cp[i]], get_trust(pods[i], checkpoints[cur_cp[i]]), end=";"); // Je comprends pas quoi passer à get turn
+            //print(get_turn(pods[i], checkpoints[cur_cp[i]]), get_trust(pods[i], checkpoints[cur_cp[i]]), end=";");
+        }
 
-                cout<<("")
-                cout<<("STOP action")
-                turn += 1
+        cout<<("")
+        cout<<("STOP action")
+        turn += 1
     }
 
 
