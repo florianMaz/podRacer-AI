@@ -16,6 +16,9 @@ int TIME = 1;
 int MAX_TRUST = 100;
 int MAX_TURN = 15;
 int player = 1; // Nombre de joueur
+std::map<char,int> walls;
+std::map<char,int> checkpoints;
+
 
 void next_input_must_be(string value) {
     string val;
@@ -52,9 +55,9 @@ std::map<char,int>  read_list_of_circles(int nbCircles) {
         for(std::string userEntry; iss >> userEntry;) {
             result.push_back(userEntry);
         }
-        l.insert (std::pair<char,int>('x',result[0]));
-        l.insert (std::pair<char,int>('y',result[1]));
-        l.insert (std::pair<char,int>('radius',result[2]));
+        l.insert (std::pair<char,int>('x',stoi(result[0])));
+        l.insert (std::pair<char,int>('y',stoi(result[1])));
+        l.insert (std::pair<char,int>('radius',stoi(result[2])));
     }
     return l;
 }
@@ -245,7 +248,7 @@ int main(char args[]) {
                         //  get_trust(pods[i], checkpoints[cur_cp[i]]), end=";", file=sys.stderr);}
 
                     }
-                    cout << get_turn(pods[i], checkpoints[cur_cp[i]], get_trust(pods[i], checkpoints[cur_cp[i]]), end=";");
+                    cout << get_turn(pods[i], checkpoints[cur_cp[i]], get_trust(pods[i], checkpoints[cur_cp[i]]), end=";"); // Je comprends pas quoi passer à get turn
                     //print(get_turn(pods[i], checkpoints[cur_cp[i]]), get_trust(pods[i], checkpoints[cur_cp[i]]), end=";");
                 }
 
