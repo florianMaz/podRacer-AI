@@ -4,7 +4,7 @@ import random
 from itertools import chain
 
 visu = "display" in sys.argv
-try : 
+try :
     import numpy as np
     import cv2
 except Exception as e:
@@ -113,7 +113,7 @@ class Element:
     def intersect(self, el):
         return (self.x-el.x)**2+(self.y-el.y)**2<(self.radius+el.radius)**2
 
-        
+
 
     def contains_center(self, el):
         return (self.x-el.x)**2+(self.y-el.y)**2<(self.radius)**2
@@ -184,9 +184,9 @@ class Pod(Element):
         cv2.circle(img,(int(self.x), int(self.y)), self.radius, c , 2)
         rad = math.radians(self.direction)
         cv2.line(img,
-                (int(self.x), int(self.y)), 
-                (int(self.x+math.cos(rad)*self.radius), int(self.y+math.sin(rad)*self.radius)),c,2)
-        
+                 (int(self.x), int(self.y)),
+                 (int(self.x+math.cos(rad)*self.radius), int(self.y+math.sin(rad)*self.radius)),c,2)
+
         cv2.putText(img,str(self.next_check),(int(self.x+self.radius), int(self.y-self.radius)), font, .5,c,2)
 
     def __str__(self):
@@ -204,14 +204,14 @@ def bounded(v,m,M):
 
 def player_action(player, action):
     actions = action.split(";")
-    try : 
+    try :
         for i,act in enumerate(actions):
             deg, p = [float(s) for s in act.split() if s.strip()]
             deg = bounded(deg, -MAX_TURN, MAX_TURN)
             p = bounded(p, 0,MAX_TRUST)
             pods[player-1][i].turn(deg)
             pods[player-1][i].trust(p)
-    except Exception as e:    
+    except Exception as e:
         print(e, file=sys.stderr)
 
 
@@ -230,29 +230,29 @@ def init_game(nb):
         if y > HEIGHT - POD_RADIUS*2:
             y = POD_RADIUS*2
             x+= POD_RADIUS*4
-            
+
     for i in range(random.randint(0,10)):
         walls.append(Element(random.randint(100,WIDTH),
-                            random.randint(0,HEIGHT),
-                            random.randint(0,WIDTH/10),
-                            mass=1000000))
+                             random.randint(0,HEIGHT),
+                             random.randint(0,WIDTH/10),
+                             mass=1000000))
 
-   
+
 
     nb_checks =  random.randint(1,10)
     while len(checkpoints) < nb_checks:
         radius = random.randint(10,WIDTH/20)
         e = Element(random.randint(100+radius,WIDTH-radius),
-                            random.randint(radius,HEIGHT-radius),
-                            random.randint(10,WIDTH/20),
-                            mass=1000000)
-       
+                    random.randint(radius,HEIGHT-radius),
+                    random.randint(10,WIDTH/20),
+                    mass=1000000)
+
         for o in chain(*pods, walls, checkpoints):
             if e.intersect(o):
                 break
         else:
             checkpoints.append(e)
-    
+
 
 
 collisions = False
@@ -275,7 +275,7 @@ def update_game():
                     mt = t
                     pod = p
                     elem = o
-        
+
         for p in chain(*pods):
             p.update_position(mt-0.001)
             p.friction(mt)
@@ -283,7 +283,7 @@ def update_game():
         time+=mt
         if pod:
             print("impact between", pod, "and", elem, file=sys.stderr)
-            pod.impact_redirection(elem)            
+            pod.impact_redirection(elem)
         pod,elem = None, None
 
     winner = 0
@@ -314,7 +314,7 @@ def display_game(winner=0):
     img = np.zeros((HEIGHT, WIDTH, 3), np.uint8)
     if collisions:
         img[:, :] = [255, 155, 155]
-    
+
     else:
         img[:, :] = [255, 255, 255]
     for w in walls:
@@ -335,7 +335,7 @@ def display_game(winner=0):
 
     cv2.imshow('POD',img)
     return cv2.waitKey(1)
-        
+
 
 
 
@@ -363,12 +363,12 @@ except:
     pass
 
 
-if GE : 
+if GE :
     #read number of players
     next_input_must_be("START players")
     players = int(input())
     next_input_must_be("STOP players")
-    
+
     init_game(players)
     print("START settings")
     print("NB_PODS",NB_PODS)
@@ -399,18 +399,18 @@ if GE :
             action = input()
             player_action(player, action)
             next_input_must_be("STOP actions %d %d"%(turn, player))
-        if winner : 
+        if winner :
             break
         turn += 1
 
 
-else : 
+else :
     init_game(4)
     while True:
         update_game()
         k = display_game()
         for i,ppods in enumerate(pods,1):
-                    for j,p in enumerate(ppods,1):
-                        p.trust(10)
-                        p.turn(1)
+            for j,p in enumerate(ppods,1):
+                p.trust(10)
+                p.turn(1)
         if k > 0 : break
