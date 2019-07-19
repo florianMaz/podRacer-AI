@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/lukile/Documents/C++/podRacer-AI/Pod.hpp
+iostream
+-
+
+/home/lukile/Documents/C++/podRacer-AI/PodRaceIA.cpp
+iostream
+-
+math.h
+-
+time.h
+-
+string
+-
+Pod.hpp
+/home/lukile/Documents/C++/podRacer-AI/Pod.hpp
+array
+-
+vector
+-
+sstream
+-
+

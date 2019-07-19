@@ -8,6 +8,8 @@
 #include <sstream>
 using namespace std;
 
+// cd build && cmake --build . && cd .. && python3 GameDispatcher.py config.cfg
+
 bool debug = false;
 int NB_PODS = 1;
 int POD_RADIUS = 10;
@@ -16,7 +18,7 @@ int WIDTH = 800;
 int HEIGHT = 800;
 int TIME = 1;
 int MAX_TURN = 15;
-int player = 1; // Nombre de joueur
+string player; // Nombre de joueur
 float MAX_TRUST = 100.0f;
 float EXPO = 1.2f;
 float MAX_SPEED = 1000.0f;
@@ -51,9 +53,10 @@ vector<string> string_split(const string& value, char delimiter)
 
 void next_input_must_be(string value) {
     string val;
-    cin >> val;
+    //cin >> val;
+    getline(cin, val);
     if (val.compare(value)) {
-        cout << "expected input was " << value << "instead of " << val <<endl;
+        cerr << "expected input was " << value << "instead of " << val <<endl;
         exit(0);
     }
 }
@@ -67,7 +70,7 @@ void read_dimensions(int width, int height) {
 void read_nb_pods(int nbPods) {
     NB_PODS = nbPods;
     if(debug)
-        cout << "nb pods : " << NB_PODS << endl;
+        cerr << "nb pods : " << NB_PODS << endl;
     //if debug:print("nb pods : ", NB_PODS, file=sys.stderr)
 }
 
@@ -189,6 +192,8 @@ void check(int i){
 
 
 int main(int argc, char const *argv[]) {
+    cerr << "Ta mere la pute" << endl;
+
     MAX_SPEED = 0.5;
     string userInput;
 
@@ -213,16 +218,21 @@ int main(int argc, char const *argv[]) {
         MAX_SPEED = atoi(argv[4]);
     }
     next_input_must_be("START player");
-    cin >> player;
+    //cin >> player;
+    getline(cin, player);
     next_input_must_be("STOP player");
 
 
     next_input_must_be("START settings");
-    cin >> userInput;
+    //cin >> userInput;
+    getline(cin, userInput);
     string checkpointsInput;
     string wallsInput;
 
+    cerr << "Beg ettings" << endl;
+
     while (userInput.compare("STOP settings") != 0) {
+
         vector<string> result;
         result = string_split(userInput, ' ');
         /*istringstream iss(userInput);
@@ -231,6 +241,7 @@ int main(int argc, char const *argv[]) {
         }*/
         if (userInput.find("NB_PODS") != string::npos) {
             settingsNbPods = stoi(result[1]);//read_nb_pods(result[1]);
+           // const int nbPods = stoi(result[1]);
         }
 
         if (userInput.find("DIMENSIONS") != string::npos) {
@@ -239,7 +250,8 @@ int main(int argc, char const *argv[]) {
         }
         if (userInput.find("WALLS") != string::npos) {
             for (size_t i = 0; i < stoi(result[1]); i++) { // result[1] => nombre de wall
-                cin >> wallsInput;
+                //cin >> wallsInput;
+                getline(cin, wallsInput);
                 vector<string> resultWallsInput;
                 resultWallsInput = string_split(wallsInput, ' ');
                 vector<int> walls; // tableau de walls
@@ -252,7 +264,8 @@ int main(int argc, char const *argv[]) {
 
         if (userInput.find("CHECKPOINTS") != string::npos) {
             for (size_t i = 0; i < stoi(result[1]); i++) { // result[1] => nombre de checkpoints
-                cin >> checkpointsInput;
+                //cin >> checkpointsInput;
+                getline(cin, checkpointsInput);
                 vector<string> resultCheckpointsInput;
                 resultCheckpointsInput = string_split(checkpointsInput, ' ');
                 vector<int> checkpoints; // tableau de walls
@@ -262,16 +275,26 @@ int main(int argc, char const *argv[]) {
                 vCheckpoints.push_back(checkpoints);
             }
         }
-        cin >> userInput;
+        //cin >> userInput;
+        getline(cin, userInput);
     }
+
+    cerr << "End ettings" << endl;
+    cerr << userInput << endl;
+
 
     //pods = vector<Pod>();
     //cur_cp = [0]*NB_PODS // ça j'ai pas compris
     turn = 1;
+    vector<Pod> mPods = vector<Pod>();
+   //Pod mPods[nbPods];
     while(1) {
+        mPods.clear();
+
         next_input_must_be("START turn");
         string end = "STOP turn";
-        cin >> userInput;
+        //cin >> userInput;
+        getline(cin, userInput);
         while(userInput.compare(end) != 0) {
             vector<string> resultTurn;
             /*istringstream iss(userInput);
@@ -285,15 +308,16 @@ int main(int argc, char const *argv[]) {
             if(debug){
                 //print(play,pod,x,y,vx,vy,direction, health, file=sys.stderr)
             }
-            //if(play == player){
-            if(true) {
-                Pod pod = Pod();
+            if(stoi(resultTurn[1]) == stoi(player)){ //play => case 1
+            //if(true) {
+                Pod pod = Pod(); //case 0
                 pod.setX(stof(resultTurn[2]));
                 pod.setY(stof(resultTurn[3]));
                 pod.setVX(stof(resultTurn[4]));
                 pod.setVY(stof(resultTurn[5]));
                 pod.setDir(stof(resultTurn[6]));
                 pod.setHealth(stof(resultTurn[7]));
+
                 /*
                 pods.append({
                                     "x":x,
@@ -305,16 +329,27 @@ int main(int argc, char const *argv[]) {
                             })
                             */
 
-                pods.push_back(pod);
-                cin >> userInput;
+                mPods.push_back(pod);
+               // mPods[stoi(resultTurn[0])] = pod;
+               // cin >> userInput;
+                getline(cin, userInput);
             }
         }
         cout << "START action" << endl;
+        cerr << "START action" << endl;
 
-        for (int i = 0; i<NB_PODS; i++){
+        for (int i = 0; i<settingsNbPods; i++){
 
             //check(i);
-            cout << turn << " " << 0.5f << ";";
+            cout << turn << " " << 10;
+            cerr << turn << " " << 10;
+            if (i == (settingsNbPods - 1)) {
+                cout << endl;
+                cerr << endl;
+            } else {
+                cout << ";";
+                cerr << ";";
+            }
             if (debug){
                 //print("debug IA : ",get_turn(pods[i], checkpoints[cur_cp[i]]),
                 //  get_trust(pods[i], checkpoints[cur_cp[i]]), end=";", file=sys.stderr);}
@@ -325,8 +360,9 @@ int main(int argc, char const *argv[]) {
             //print(get_turn(pods[i], checkpoints[cur_cp[i]]), get_trust(pods[i], checkpoints[cur_cp[i]]), end=";");
         }
 
-        cout<<endl;
-        cout<<"STOP action";
+        cout<<"STOP action"<<endl;
+        cerr<<"STOP action"<<endl;
+
         turn += 1;
     }
 }
