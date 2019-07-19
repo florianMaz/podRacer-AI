@@ -24,8 +24,11 @@ float MIN_SPEED = 1.0f;
 vector<Pod> pods;
 //map<char,int> walls;
 //map<char,int> checkpoints;
-vector<int> cur_cp;
+vector<int> cur_cp; // cp = checkpoints
 vector<int> checkpoints;
+
+vector<vector<int> > vCheckpoints;
+vector<vector<int> > vWalls;
 int turn = 0;
 
 
@@ -216,22 +219,53 @@ int main(int argc, char const *argv[]) {
 
     next_input_must_be("START settings");
     cin >> userInput;
+    string checkpointsInput;
+    string wallsInput;
+
     while (userInput.compare("STOP settings") != 0) {
         vector<string> result;
+        result = string_split(userInput, ' ');
         /*istringstream iss(userInput);
         for(string userInput; iss >> userInput;) {
             result.push_back(userInput);
         }*/
-        result = string_split(userInput, ' ');
-        settingsDimensions = 100;//read_dimensions(result[0], result[1]);
-        settingsWalls = 1;//read_walls(result[2]);
-        settingsCheckpoints = 1;//read_checkpoints(result[3]);
-        settingsNbPods = 1;//read_nb_pods(result[4]);
+        if (userInput.find("NB_PODS") != string::npos) {
+            settingsNbPods = stoi(result[1]);//read_nb_pods(result[1]);
+        }
+
+        if (userInput.find("DIMENSIONS") != string::npos) {
+            WIDTH = stoi(result[1]);
+            HEIGHT = stoi(result[2]);
+        }
+        if (userInput.find("WALLS") != string::npos) {
+            for (size_t i = 0; i < stoi(result[1]); i++) { // result[1] => nombre de wall
+                cin >> wallsInput;
+                vector<string> resultWallsInput;
+                resultWallsInput = string_split(wallsInput, ' ');
+                vector<int> walls; // tableau de walls
+                walls.push_back(stoi(resultWallsInput[0]));
+                walls.push_back(stoi(resultWallsInput[1]));
+                walls.push_back(stoi(resultWallsInput[2]));
+                vWalls.push_back(walls);
+            }
+        }
+
+        if (userInput.find("CHECKPOINTS") != string::npos) {
+            for (size_t i = 0; i < stoi(result[1]); i++) { // result[1] => nombre de checkpoints
+                cin >> checkpointsInput;
+                vector<string> resultCheckpointsInput;
+                resultCheckpointsInput = string_split(checkpointsInput, ' ');
+                vector<int> checkpoints; // tableau de walls
+                checkpoints.push_back(stoi(resultCheckpointsInput[0]));
+                checkpoints.push_back(stoi(resultCheckpointsInput[1]));
+                checkpoints.push_back(stoi(resultCheckpointsInput[2]));
+                vCheckpoints.push_back(checkpoints);
+            }
+        }
         cin >> userInput;
     }
 
-
-    pods = vector<Pod>();
+    //pods = vector<Pod>();
     //cur_cp = [0]*NB_PODS // ça j'ai pas compris
     turn = 1;
     while(1) {
@@ -273,17 +307,7 @@ int main(int argc, char const *argv[]) {
 
                 pods.push_back(pod);
                 cin >> userInput;
-
             }
-        }
-
-
-        if (debug){
-            //cout << pods;
-            //print(pods, file=sys.stderr)
-        }
-        if(debug){
-            //print(checkpoints, file=sys.stderr)
         }
         cout << "START action" << endl;
 
@@ -302,10 +326,8 @@ int main(int argc, char const *argv[]) {
         }
 
         cout<<endl;
-        cout<<"STOP action" << endl;
+        cout<<"STOP action";
         turn += 1;
     }
-
-
 }
 
