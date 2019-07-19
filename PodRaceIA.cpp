@@ -5,25 +5,46 @@
 #include "Pod.hpp"
 #include <array>
 #include <vector>
+#include <sstream>
 using namespace std;
 
 bool debug = false;
 int NB_PODS = 1;
 int POD_RADIUS = 10;
-float FRICTION = 0.005;
+float FRICTION = 0.005f;
 int WIDTH = 800;
 int HEIGHT = 800;
 int TIME = 1;
-int MAX_TRUST = 100;
 int MAX_TURN = 15;
 int player = 1; // Nombre de joueur
-float MAX_TRUST = 100.0;
-float EXPO = 1.2;
-float MAX_SPEED = 1000.0;
-float MIN_SPEED = 1.0;
+float MAX_TRUST = 100.0f;
+float EXPO = 1.2f;
+float MAX_SPEED = 1000.0f;
+float MIN_SPEED = 1.0f;
 vector<Pod> pods;
 //map<char,int> walls;
 //map<char,int> checkpoints;
+vector<int> cur_cp;
+vector<int> checkpoints;
+int turn = 0;
+
+
+int settingsDimensions;
+int settingsWalls;
+int settingsCheckpoints;
+int settingsNbPods;
+
+vector<string> string_split(const string& value, char delimiter)
+{
+    stringstream val_stream(value);
+    string part;
+    vector<string> parts;
+    while (getline(val_stream, part, delimiter))
+    {
+        parts.push_back(part);
+    }
+    return parts;
+}
 
 void next_input_must_be(string value) {
     string val;
@@ -67,7 +88,7 @@ map<char,int> read_list_of_circles(int nbCircles) {
     return l;
 }*/
     
-
+/*
 void read_walls(int nbCircles){
     walls = 2;//read_list_of_circles(nbCircles)
 }
@@ -81,10 +102,10 @@ void read_checkpoints(int nbCircles) {
 
 
 template <typename T> T dot(vector<T> a, vector<T> b) {
-    /*
-    def dot(a,b):
-        return sum(x*y for x,y in zip(a,b))
-    */
+
+    //def dot(a,b):
+    //    return sum(x*y for x,y in zip(a,b))
+
 
     T result = 0;
 
@@ -96,10 +117,10 @@ template <typename T> T dot(vector<T> a, vector<T> b) {
 
     return result;
 }
+*/
 
-
-float get_turn(Pod pod, array<int, 3> cp) {
-    vector<T> vector = vector<float>();
+float get_turn(Pod pod, vector<int> cp) {
+    vector<float> vector;
 
     int x = pod.getX();
     int y = pod.getY();
@@ -109,12 +130,14 @@ float get_turn(Pod pod, array<int, 3> cp) {
     vector.push_back(cp[1] - y);
 
     //Modulo in degrees of arc tangent in range radians of vector reference
-    float angle = fmodf(toDegrees(atan2f(vector.at(0), vector.at(1))), 360);
-
+    //float angle = fmodf(toDegrees(atan2f(vector.at(0), vector.at(1))), 360);
+    //float angle = 0.5f;
+    float radians = atan2f(vector.at(0), vector.at(1));
+    float angle = fmod(radians * (180.0 / 3.141592653589793238463), 360);
     return -(pod.getDir() - angle) / 2;
 }
 
-
+/*
 float get_trust(Pod pod, array<int, 3>cp){
     vector<float> vec = vector<float>();
     vec.push_back(cp[0]-pod.getX());
@@ -147,17 +170,19 @@ float get_trust(Pod pod, array<int, 3>cp){
     }
     return trust;
 }
-
+*/
+/*
 void check(int i){
     Pod pod = pods[i];
-    array<int, 3> cp = checkpoints[cur_cp[i]];
+    vector<int> cp = checkpoints[cur_cp[i]];
     vector<float> vec = vector<float>();
     vec.push_back(cp[0]-pod.getX());
     vec.push_back(cp[1]-pod.getY());
-    if (dot(vec, vec) < powf(cp[3], 2)){
-        cur_cp[i]+=1;
-    }
-}
+    //if (dot(vec, vec) < powf(cp[3], 2)){
+        //cur_cp[i]+=1;
+        cur_cp.push_back(i);
+    //}
+}*/
 
 
 int main(int argc, char const *argv[]) {
@@ -193,45 +218,48 @@ int main(int argc, char const *argv[]) {
     cin >> userInput;
     while (userInput.compare("STOP settings") != 0) {
         vector<string> result;
-        istringstream iss(userInput);
+        /*istringstream iss(userInput);
         for(string userInput; iss >> userInput;) {
             result.push_back(userInput);
-        }
-        int settingsDimensions = 100;//read_dimensions(result[0], result[1]);
-        int settingsWalls = 1;//read_walls(result[2]);
-        int settingsCheckpoints = 1;//read_checkpoints(result[3]);
-        int settingsNbPods = 1;//read_nb_pods(result[4]);
+        }*/
+        result = string_split(userInput, ' ');
+        settingsDimensions = 100;//read_dimensions(result[0], result[1]);
+        settingsWalls = 1;//read_walls(result[2]);
+        settingsCheckpoints = 1;//read_checkpoints(result[3]);
+        settingsNbPods = 1;//read_nb_pods(result[4]);
         cin >> userInput;
     }
 
 
     pods = vector<Pod>();
-    cur_cp = [0]*NB_PODS // ça j'ai pas compris
-    turn = 1
+    //cur_cp = [0]*NB_PODS // ça j'ai pas compris
+    turn = 1;
     while(1) {
         next_input_must_be("START turn");
         string end = "STOP turn";
         cin >> userInput;
         while(userInput.compare(end) != 0) {
             vector<string> resultTurn;
-            istringstream iss(userInput);
+            /*istringstream iss(userInput);
             for(string userInput; iss >> userInput;) {
                 resultTurn.push_back(userInput);
-            }
+            }*/
+            resultTurn = string_split(userInput, ' ');
             //play=>result[0],pod=>result[1],x=>result[2],y=>result[3],
             // vx=>result[4],vy=>result[5],direction=>result[6], health=>result[7] = map(float, line.split())
 
             if(debug){
                 //print(play,pod,x,y,vx,vy,direction, health, file=sys.stderr)
             }
-            if(play == player){
-                Pod pod = new Pod();
-                pod.setX(stof(result[2]));
-                pod.setY(stof(result[3]));
-                pod.setVX(stof(result[4]));
-                pod.setVY(stof(result[5]));
-                pod.setDir(stof(result[6]));
-                pod.setHealth(stof(result[7]));
+            //if(play == player){
+            if(true) {
+                Pod pod = Pod();
+                pod.setX(stof(resultTurn[2]));
+                pod.setY(stof(resultTurn[3]));
+                pod.setVX(stof(resultTurn[4]));
+                pod.setVY(stof(resultTurn[5]));
+                pod.setDir(stof(resultTurn[6]));
+                pod.setHealth(stof(resultTurn[7]));
                 /*
                 pods.append({
                                     "x":x,
@@ -243,37 +271,39 @@ int main(int argc, char const *argv[]) {
                             })
                             */
 
+                pods.push_back(pod);
+                cin >> userInput;
+
             }
-            pods.push_back(pod);
-            cin >> userInput;
         }
 
 
         if (debug){
-            cout << pods;
+            //cout << pods;
             //print(pods, file=sys.stderr)
         }
         if(debug){
             //print(checkpoints, file=sys.stderr)
         }
+        cout << "START action" << endl;
 
-        print("START action")
         for (int i = 0; i<NB_PODS; i++){
 
-            check(i);
+            //check(i);
+            cout << turn << " " << 0.5f << ";";
             if (debug){
                 //print("debug IA : ",get_turn(pods[i], checkpoints[cur_cp[i]]),
                 //  get_trust(pods[i], checkpoints[cur_cp[i]]), end=";", file=sys.stderr);}
 
             }
-            cout << get_turn(pods[i] << settingsDimensions << get_trust(pods[i]) << settingsCheckpoints << ";";
+            //cout << get_turn(pods[i], cur_cp) << settingsDimensions << 0.5 << settingsCheckpoints << ";";
             //cout << get_turn(pods[i], checkpoints[cur_cp[i]], get_trust(pods[i], checkpoints[cur_cp[i]]), end=";"); // Je comprends pas quoi passer à get turn
             //print(get_turn(pods[i], checkpoints[cur_cp[i]]), get_trust(pods[i], checkpoints[cur_cp[i]]), end=";");
         }
 
-        cout<<("")
-        cout<<("STOP action")
-        turn += 1
+        cout<<endl;
+        cout<<"STOP action" << endl;
+        turn += 1;
     }
 
 

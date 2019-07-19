@@ -10,7 +10,9 @@ private:
     float vy;
 
 public:
-    Pod(){}
+    /*Pod(){
+
+    }*/
 
     float getX() {
         return this->x;
