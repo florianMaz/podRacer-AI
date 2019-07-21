@@ -356,11 +356,6 @@ int main(int argc, char const *argv[]) {
             //check(i);
            // cout << get_turn(my[i], vCheckpoints[0]) << " " << pods[i].getVY();
             float podThrust = 10;
-            //float currentDistance = getDistanceToCheckpoints(mPods[i]);
-           /* if(currentDistance > previousDistance) {
-                podThrust = -(2*podThrust);
-            }*/
-            //previousDistance = currentDistance;
             cout << get_turn(mPods[i]) << " " << podThrust;
             if((mPods[i].getX() > checkpointsX-checkpointsRayon && mPods[i].getX() < checkpointsX+checkpointsRayon)
             && (mPods[i].getY() > checkpointsY-checkpointsRayon && mPods[i].getY() < checkpointsY+checkpointsRayon)){

@@ -10,8 +10,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4cde277e-0203-426b-8e3e-a2c877f550bf" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PodRaceGE.py" beforeDir="false" afterPath="$PROJECT_DIR$/PodRaceGE.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PodRaceIA.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/PodRaceIA.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/podRacerIA" beforeDir="false" afterPath="$PROJECT_DIR$/podRacerIA" afterDir="false" />
     </list>
@@ -26,8 +24,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/PodRaceIA.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="253">
-              <caret line="385" column="33" selection-start-line="385" selection-start-column="33" selection-end-line="385" selection-end-column="33" />
+            <state relative-caret-position="297">
+              <caret line="383" column="5" lean-forward="true" selection-start-line="383" selection-start-column="5" selection-end-line="383" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -40,7 +38,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PodRaceIA.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="134">
+            <state relative-caret-position="930">
               <caret line="64" column="7" selection-start-line="64" selection-start-column="4" selection-end-line="64" selection-end-column="7" />
             </state>
           </provider>
@@ -107,8 +105,8 @@
       <find>cp</find>
       <find>change</find>
       <find>check</find>
-      <find>dot</find>
       <find>checkpoints</find>
+      <find>dot</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -193,7 +191,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="24555000" />
+    <option name="totallyTimeSpent" value="25523000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -243,9 +241,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/podracer.cfg">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/config.cfg">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
@@ -270,13 +265,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PodRaceIA.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="64" column="7" selection-start-line="64" selection-start-column="4" selection-end-line="64" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Pod.hpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="157">
@@ -284,10 +272,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/PodRaceIA.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="930">
+          <caret line="64" column="7" selection-start-line="64" selection-start-column="4" selection-end-line="64" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/podracer.cfg">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/PodRaceIA.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="253">
-          <caret line="385" column="33" selection-start-line="385" selection-start-column="33" selection-end-line="385" selection-end-column="33" />
+        <state relative-caret-position="297">
+          <caret line="383" column="5" lean-forward="true" selection-start-line="383" selection-start-column="5" selection-end-line="383" selection-end-column="5" />
         </state>
       </provider>
     </entry>
