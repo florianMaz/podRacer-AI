@@ -22,7 +22,6 @@ int TIME = 1;
 int MAX_TURN = 15;
 string player; // Nombre de joueur
 float MAX_TRUST = 100.0f;
-float MIN_TRUST = 10.0f;
 float EXPO = 1.2f;
 float MAX_SPEED = 1000.0f;
 float MIN_SPEED = 1.0f;
@@ -30,7 +29,7 @@ vector<Pod> pods;
 //map<char,int> walls;
 //map<char,int> checkpoints;
 array<int, 3> cur_cp = array<int, 3>(); // cp = checkpoints
-vector<int> checkpoints = vector<int>();;
+vector<int> checkpoints = vector<int>();
 
 vector<vector<int> > vCheckpoints;
 vector<vector<int> > vWalls;
@@ -130,11 +129,6 @@ template <typename T> T dot(vector<T> a, vector<T> b) {
     return result;
 }
 
-
-float toDegrees(float radian) {
-    return radian * (180.0 / M_PI);
-}
-
 float get_turn(Pod pod, array<int, 3> cp) {
     vector<float> vector;
 
@@ -148,54 +142,40 @@ float get_turn(Pod pod, array<int, 3> cp) {
     return -(pod.getDir() - angle) / 2;
 }
 
-/*float get_turn(Pod pod, vector<int> cp) {
-    vector<float> vector;
-
-    int x = pod.getX();
-    int y = pod.getY();
-
-    //Add at the end of vector
-    vector.push_back(cp[0] - x);
-    vector.push_back(cp[1] - y);
-
-    //Modulo in degrees of arc tangent in range radians of vector reference
-    //float angle = fmodf(toDegrees(atan2f(vector.at(0), vector.at(1))), 360);
-    //float angle = 0.5f;
-    float radians = atan2f(vector.at(0), vector.at(1));
-    float angle = fmod(radians * (180.0 / 3.141592653589793238463), 360);
-    return -(pod.getDir() - angle) / 2;
-}*/
-
-
 float get_trust(Pod pod, array<int, 3> cp){
+    float normvec;
+
+    cp = array<int, 3>();
+
     vector<float> vec = vector<float>();
     vec.push_back(cp[0]-pod.getX());
     vec.push_back(cp[1]-pod.getY());
-    float normVec = powf(dot(vec, vec), 0.5);
-    vec.insert(vec.begin(), vec.at(0)/normVec);
-    vec.insert(vec.begin(), vec.at(1)/normVec);
+    normvec = 0.00001+dot(vec,vec)*0.5;//.00001+dot(vec,vec)**.5;
+    vec.push_back(vec[0]/normvec);
+    vec.push_back(vec[1]/normvec);
+
 
     vector<float> speed = vector<float>();
-    speed.push_back(cp[0]-pod.getX());
-    speed.push_back(cp[1]-pod.getY());
-    float normSpeed = pow(dot(speed, speed), 0.5);
-    speed.insert(speed.begin(), speed.at(0)/normSpeed);
-    speed.insert(speed.begin(), speed.at(1)/normSpeed);
+    speed.push_back(pod.getVX());
+    speed.push_back(pod.getVY());
 
-    if (dot(vec, speed) > 0.5) {
-        if (normSpeed > MAX_SPEED){
-            return MIN_TRUST;
-        }
-        if (normSpeed < MIN_SPEED){
-            return MAX_TRUST;
-        }
+    float normspeed = 0.00001+dot(speed,speed)*0.5;//.00001+dot(speed,speed)**.5;
+    speed.push_back(speed[0]/normspeed);
+    speed.push_back(speed[1]/normspeed);
+
+    if (dot(vec, speed) > 0.5){
+        if (normspeed > MAX_SPEED){
+                    return 0;
+            }
+        if(normspeed < MIN_SPEED){
+                    return MAX_TRUST;
+            }
     }
-    float thrust = powf(normVec, EXPO);
-    if (thrust > MAX_TRUST) {
+    float trust = powf(normvec, EXPO);
+    if(trust > MAX_TRUST){
         return MAX_TRUST;
-    } else {
-        return thrust;
     }
+    return trust;
 }
 
 
