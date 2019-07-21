@@ -22,14 +22,15 @@ int TIME = 1;
 int MAX_TURN = 15;
 string player; // Nombre de joueur
 float MAX_TRUST = 100.0f;
+float MIN_TRUST = 10.0f;
 float EXPO = 1.2f;
 float MAX_SPEED = 1000.0f;
 float MIN_SPEED = 1.0f;
 vector<Pod> pods;
 //map<char,int> walls;
 //map<char,int> checkpoints;
-vector<int> cur_cp; // cp = checkpoints
-vector<int> checkpoints;
+array<int, 3> cur_cp = array<int, 3>(); // cp = checkpoints
+vector<int> checkpoints = vector<int>();;
 
 vector<vector<int> > vCheckpoints;
 vector<vector<int> > vWalls;
@@ -119,7 +120,10 @@ template <typename T> T dot(vector<T> a, vector<T> b) {
 
     for(auto it = a.begin(), end = a.end(); it != end; it++) {
         for(auto it2 = b.begin(), end = b.end(); it2 != end; it2++) {
-            result *= it * it2;
+           // cerr << "it " << it << endl;
+           // cerr << "it2 " << it2 << endl;
+
+            result += (*it) * (*it2);
         }
     }
 
@@ -127,7 +131,24 @@ template <typename T> T dot(vector<T> a, vector<T> b) {
 }
 
 
-float get_turn(Pod pod, vector<int> cp) {
+float toDegrees(float radian) {
+    return radian * (180.0 / M_PI);
+}
+
+float get_turn(Pod pod, array<int, 3> cp) {
+    vector<float> vector;
+
+    int x = pod.getX();
+    int y = pod.getY();
+
+    vector.push_back(cp[0]- x);
+    vector.push_back(cp[1]- y);
+
+    float angle = fmodf((atan2f(vector.at(1), vector.at(0))) * (180 / M_PI), 360);
+    return -(pod.getDir() - angle) / 2;
+}
+
+/*float get_turn(Pod pod, vector<int> cp) {
     vector<float> vector;
 
     int x = pod.getX();
@@ -143,52 +164,58 @@ float get_turn(Pod pod, vector<int> cp) {
     float radians = atan2f(vector.at(0), vector.at(1));
     float angle = fmod(radians * (180.0 / 3.141592653589793238463), 360);
     return -(pod.getDir() - angle) / 2;
-}
+}*/
 
 
-float get_trust(Pod pod, array<int, 3>cp){
-    float normvec;
+float get_trust(Pod pod, array<int, 3> cp){
     vector<float> vec = vector<float>();
     vec.push_back(cp[0]-pod.getX());
     vec.push_back(cp[1]-pod.getY());
-    normvec = 0.00001+dot(vec,vec)*0.5;//.00001+dot(vec,vec)**.5;
-    vec.push_back(vec[0]/normvec);
-    vec.push_back(vec[1]/normvec);
-
+    float normVec = powf(dot(vec, vec), 0.5);
+    vec.insert(vec.begin(), vec.at(0)/normVec);
+    vec.insert(vec.begin(), vec.at(1)/normVec);
 
     vector<float> speed = vector<float>();
-    speed.push_back(pod.getVX());
-    speed.push_back(pod.getVY());
+    speed.push_back(cp[0]-pod.getX());
+    speed.push_back(cp[1]-pod.getY());
+    float normSpeed = pow(dot(speed, speed), 0.5);
+    speed.insert(speed.begin(), speed.at(0)/normSpeed);
+    speed.insert(speed.begin(), speed.at(1)/normSpeed);
 
-    float normspeed = 0.00001+dot(speed,speed)*0.5;//.00001+dot(speed,speed)**.5;
-    speed.push_back(speed[0]/normspeed);
-    speed.push_back(speed[1]/normspeed);
-
-    if (dot(vec, speed) > 0.5){
-        if (normspeed > MAX_SPEED){
-                    return 0;
-            }
-        if(normspeed < MIN_SPEED){
-                    return MAX_TRUST;
-            }
+    if (dot(vec, speed) > 0.5) {
+        if (normSpeed > MAX_SPEED){
+            return MIN_TRUST;
+        }
+        if (normSpeed < MIN_SPEED){
+            return MAX_TRUST;
+        }
     }
-    float trust = powf(normvec, EXPO);
-    if(trust > MAX_TRUST){
+    float thrust = powf(normVec, EXPO);
+    if (thrust > MAX_TRUST) {
         return MAX_TRUST;
+    } else {
+        return thrust;
     }
-    return trust;
 }
+
+
 
 
 void check(int i){
     Pod pod = pods[i];
-    vector<int> cp = checkpoints[cur_cp[i]];
+    while(i < NB_PODS) {
+        cur_cp[0];
+    }
+    array<int, 3> cp = array<int, 3>();
+    cp[checkpoints[cur_cp[i]]];
+
+
     vector<float> vec = vector<float>();
     vec.push_back(cp[0]-pod.getX());
     vec.push_back(cp[1]-pod.getY());
     if (dot(vec, vec) < powf(cp[3], 2)){
         cur_cp[i]+=1;
-        cur_cp.push_back(i);
+        cur_cp[i];
     }
 }
 
@@ -287,6 +314,9 @@ int main(int argc, char const *argv[]) {
 
     //pods = vector<Pod>();
     //cur_cp = [0]*NB_PODS // ça j'ai pas compris
+
+
+
     turn = 1;
     vector<Pod> mPods = vector<Pod>();
    //Pod mPods[nbPods];
@@ -340,10 +370,10 @@ int main(int argc, char const *argv[]) {
         cout << "START action" << endl;
         cerr << "START action" << endl;
 
-        for (int i = 0; i<settingsNbPods; i++){
+        for (int i = 0; i<settingsNbPods; i++) {
 
             check(i);
-            /*cout << turn << " " << 10;
+            cout << turn << " " << 10;
             cerr << turn << " " << 10;
             if (i == (settingsNbPods - 1)) {
                 cout << endl;
@@ -352,12 +382,15 @@ int main(int argc, char const *argv[]) {
                 cout << ";";
                 cerr << ";";
             }
-            if (debug){*/
+            if (debug) {
                 //print("debug IA : ",get_turn(pods[i], checkpoints[cur_cp[i]]),
                 //  get_trust(pods[i], checkpoints[cur_cp[i]]), end=";", file=sys.stderr);}
-            cout << get_turn(pods[i], cur_cp) << settingsDimensions << 0.5 << settingsCheckpoints << ";";
-            cout << get_turn(pods[i], checkpoints[cur_cp[i]], get_trust(pods[i], checkpoints[cur_cp[i]]), end=";"); // Je comprends pas quoi passer à get turn
-            //print(get_turn(pods[i], checkpoints[cur_cp[i]]), get_trust(pods[i], checkpoints[cur_cp[i]]), end=";");
+                int turn = get_turn(pods[i], checkpoints[cur_cp[i]], get_trust(pods[i], checkpoints[cur_cp[i]]), end=";");
+
+                 cout << get_turn(pods[i], cur_cp) << settingsDimensions << 0.5 << settingsCheckpoints << ";";
+                cout << turn; // Je comprends pas quoi passer à get turn
+                //print(get_turn(pods[i], checkpoints[cur_cp[i]]), get_trust(pods[i], checkpoints[cur_cp[i]]), end=";");
+            }
         }
 
     }
