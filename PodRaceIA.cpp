@@ -6,6 +6,8 @@
 #include <array>
 #include <vector>
 #include <sstream>
+#include <map>
+
 using namespace std;
 
 // cd build && cmake --build . && cd .. && python3 GameDispatcher.py config.cfg
@@ -104,7 +106,7 @@ void read_checkpoints(int nbCircles) {
     if(debug) {
         cout << "checkpoints : " << checkpoints << endl;
     }
-}
+}*/
 
 
 template <typename T> T dot(vector<T> a, vector<T> b) {
@@ -123,7 +125,7 @@ template <typename T> T dot(vector<T> a, vector<T> b) {
 
     return result;
 }
-*/
+
 
 float get_turn(Pod pod, vector<int> cp) {
     vector<float> vector;
@@ -143,12 +145,12 @@ float get_turn(Pod pod, vector<int> cp) {
     return -(pod.getDir() - angle) / 2;
 }
 
-/*
+
 float get_trust(Pod pod, array<int, 3>cp){
+    float normvec;
     vector<float> vec = vector<float>();
     vec.push_back(cp[0]-pod.getX());
     vec.push_back(cp[1]-pod.getY());
-    float normvec;
     normvec = 0.00001+dot(vec,vec)*0.5;//.00001+dot(vec,vec)**.5;
     vec.push_back(vec[0]/normvec);
     vec.push_back(vec[1]/normvec);
@@ -170,29 +172,29 @@ float get_trust(Pod pod, array<int, 3>cp){
                     return MAX_TRUST;
             }
     }
-    float trust = powf(normVec, EXPO);
+    float trust = powf(normvec, EXPO);
     if(trust > MAX_TRUST){
         return MAX_TRUST;
     }
     return trust;
 }
-*/
-/*
+
+
 void check(int i){
     Pod pod = pods[i];
     vector<int> cp = checkpoints[cur_cp[i]];
     vector<float> vec = vector<float>();
     vec.push_back(cp[0]-pod.getX());
     vec.push_back(cp[1]-pod.getY());
-    //if (dot(vec, vec) < powf(cp[3], 2)){
-        //cur_cp[i]+=1;
+    if (dot(vec, vec) < powf(cp[3], 2)){
+        cur_cp[i]+=1;
         cur_cp.push_back(i);
-    //}
-}*/
+    }
+}
 
 
 int main(int argc, char const *argv[]) {
-    cerr << "Ta mere la pute" << endl;
+    cerr << "TEST" << endl;
 
     MAX_SPEED = 0.5;
     string userInput;
@@ -268,7 +270,7 @@ int main(int argc, char const *argv[]) {
                 getline(cin, checkpointsInput);
                 vector<string> resultCheckpointsInput;
                 resultCheckpointsInput = string_split(checkpointsInput, ' ');
-                vector<int> checkpoints; // tableau de walls
+                vector<int> checks; // tableau de walls
                 checkpoints.push_back(stoi(resultCheckpointsInput[0]));
                 checkpoints.push_back(stoi(resultCheckpointsInput[1]));
                 checkpoints.push_back(stoi(resultCheckpointsInput[2]));
@@ -340,8 +342,8 @@ int main(int argc, char const *argv[]) {
 
         for (int i = 0; i<settingsNbPods; i++){
 
-            //check(i);
-            cout << turn << " " << 10;
+            check(i);
+            /*cout << turn << " " << 10;
             cerr << turn << " " << 10;
             if (i == (settingsNbPods - 1)) {
                 cout << endl;
@@ -350,19 +352,18 @@ int main(int argc, char const *argv[]) {
                 cout << ";";
                 cerr << ";";
             }
-            if (debug){
+            if (debug){*/
                 //print("debug IA : ",get_turn(pods[i], checkpoints[cur_cp[i]]),
                 //  get_trust(pods[i], checkpoints[cur_cp[i]]), end=";", file=sys.stderr);}
-
-            }
-            //cout << get_turn(pods[i], cur_cp) << settingsDimensions << 0.5 << settingsCheckpoints << ";";
-            //cout << get_turn(pods[i], checkpoints[cur_cp[i]], get_trust(pods[i], checkpoints[cur_cp[i]]), end=";"); // Je comprends pas quoi passer à get turn
+            cout << get_turn(pods[i], cur_cp) << settingsDimensions << 0.5 << settingsCheckpoints << ";";
+            cout << get_turn(pods[i], checkpoints[cur_cp[i]], get_trust(pods[i], checkpoints[cur_cp[i]]), end=";"); // Je comprends pas quoi passer à get turn
             //print(get_turn(pods[i], checkpoints[cur_cp[i]]), get_trust(pods[i], checkpoints[cur_cp[i]]), end=";");
         }
+
+    }
 
         cout<<"STOP action"<<endl;
         cerr<<"STOP action"<<endl;
 
         turn += 1;
-    }
 }
