@@ -9,6 +9,8 @@
 using namespace std;
 
 // cd build && cmake --build . && cd .. && python3 GameDispatcher.py config.cfg
+//g++ PodRaceIA.cpp -o podRacerIA
+//python3 GameDispatcher.py config.cfg
 
 bool debug = false;
 int NB_PODS = 1;
@@ -39,13 +41,16 @@ int settingsWalls;
 int settingsCheckpoints;
 int settingsNbPods;
 
+int checkpointsX;
+int checkpointsY;
+int checkpointsRayon;
+
 vector<string> string_split(const string& value, char delimiter)
 {
     stringstream val_stream(value);
     string part;
     vector<string> parts;
-    while (getline(val_stream, part, delimiter))
-    {
+    while (getline(val_stream, part, delimiter)) {
         parts.push_back(part);
     }
     return parts;
@@ -55,7 +60,9 @@ void next_input_must_be(string value) {
     string val;
     //cin >> val;
     getline(cin, val);
-    if (val.compare(value)) {
+    cerr << "expected input need to be :  " << value << "given was : " << val <<endl;
+
+    if (val.compare(value) != 0) {
         cerr << "expected input was " << value << "instead of " << val <<endl;
         exit(0);
     }
@@ -125,15 +132,15 @@ template <typename T> T dot(vector<T> a, vector<T> b) {
 }
 */
 
-float get_turn(Pod pod, vector<int> cp) {
+float get_turn(Pod pod) {
     vector<float> vector;
 
-    int x = pod.getX();
-    int y = pod.getY();
+    float x = pod.getX();
+    float y = pod.getY();
 
     //Add at the end of vector
-    vector.push_back(cp[0] - x);
-    vector.push_back(cp[1] - y);
+    vector.push_back(checkpointsX - x);
+    vector.push_back(checkpointsY - y);
 
     //Modulo in degrees of arc tangent in range radians of vector reference
     //float angle = fmodf(toDegrees(atan2f(vector.at(0), vector.at(1))), 360);
@@ -189,10 +196,13 @@ void check(int i){
         cur_cp.push_back(i);
     //}
 }*/
-
+void check(int i){
+    Pod pod = pods[i];
+    //cerr << "pod get x and y" << pod.getX() << " & " << pod.getY();
+    //cerr << "checkpoints get x and y" << vCheckpoints[0][0] << " & " << vCheckpoints[0][1];
+}
 
 int main(int argc, char const *argv[]) {
-    cerr << "Ta mere la pute" << endl;
 
     MAX_SPEED = 0.5;
     string userInput;
@@ -228,8 +238,6 @@ int main(int argc, char const *argv[]) {
     getline(cin, userInput);
     string checkpointsInput;
     string wallsInput;
-
-    cerr << "Beg ettings" << endl;
 
     while (userInput.compare("STOP settings") != 0) {
 
@@ -272,15 +280,15 @@ int main(int argc, char const *argv[]) {
                 checkpoints.push_back(stoi(resultCheckpointsInput[0]));
                 checkpoints.push_back(stoi(resultCheckpointsInput[1]));
                 checkpoints.push_back(stoi(resultCheckpointsInput[2]));
+                checkpointsX = stoi(resultCheckpointsInput[0]);
+                checkpointsY = stoi(resultCheckpointsInput[1]);
+                checkpointsRayon = stoi(resultCheckpointsInput[2]);
                 vCheckpoints.push_back(checkpoints);
             }
         }
         //cin >> userInput;
         getline(cin, userInput);
     }
-
-    cerr << "End ettings" << endl;
-    cerr << userInput << endl;
 
 
     //pods = vector<Pod>();
@@ -292,9 +300,12 @@ int main(int argc, char const *argv[]) {
         mPods.clear();
 
         next_input_must_be("START turn");
+
         string end = "STOP turn";
         //cin >> userInput;
         getline(cin, userInput);
+        cerr << "after start turn : " <<userInput << endl;
+        //cout << "START turn" << endl;
         while(userInput.compare(end) != 0) {
             vector<string> resultTurn;
             /*istringstream iss(userInput);
@@ -320,35 +331,46 @@ int main(int argc, char const *argv[]) {
 
                 /*
                 pods.append({
-                                    "x":x,
-                                    "y":y,
-                                    "vx":vx,
-                                    "vy":vy,
-                                    "dir":direction,
-                                    "health":health
-                            })
-                            */
+                        "x":x,
+                        "y":y,
+                        "vx":vx,
+                        "vy":vy,
+                        "dir":direction,
+                        "health":health
+                })
+                */
 
                 mPods.push_back(pod);
                 // mPods[stoi(resultTurn[0])] = pod;
                 // cin >> userInput;
-                getline(cin, userInput);
             }
+
+            getline(cin, userInput);
         }
+
         cout << "START action" << endl;
         cerr << "START action" << endl;
 
         for (int i = 0; i<settingsNbPods; i++){
 
             //check(i);
-            cout << turn << " " << 10;
-            cerr << turn << " " << 10;
+           // cout << get_turn(my[i], vCheckpoints[0]) << " " << pods[i].getVY();
+            float podThrust = 10;
+            //float currentDistance = getDistanceToCheckpoints(mPods[i]);
+           /* if(currentDistance > previousDistance) {
+                podThrust = -(2*podThrust);
+            }*/
+            //previousDistance = currentDistance;
+            cout << get_turn(mPods[i]) << " " << podThrust;
+            if((mPods[i].getX() > checkpointsX-checkpointsRayon && mPods[i].getX() < checkpointsX+checkpointsRayon)
+            && (mPods[i].getY() > checkpointsY-checkpointsRayon && mPods[i].getY() < checkpointsY+checkpointsRayon)){
+                cerr << "winner is the pod" << i << endl;
+                exit(1);
+            }
             if (i == (settingsNbPods - 1)) {
                 cout << endl;
-                cerr << endl;
             } else {
                 cout << ";";
-                cerr << ";";
             }
             if (debug){
                 //print("debug IA : ",get_turn(pods[i], checkpoints[cur_cp[i]]),

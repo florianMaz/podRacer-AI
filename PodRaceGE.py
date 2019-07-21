@@ -239,7 +239,7 @@ def init_game(nb):
 
 
 
-    nb_checks =  random.randint(1,10)
+    nb_checks = 1# change to 1 for test old code => random.randint(1,10)
     while len(checkpoints) < nb_checks:
         radius = random.randint(10,WIDTH/20)
         e = Element(random.randint(100+radius,WIDTH-radius),
